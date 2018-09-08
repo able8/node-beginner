@@ -111,6 +111,66 @@ node helloworld.js
 
 ## 4 构建应用的模块
 
+### 4.1 一个基础的HTTP服务器
+
+让我们先从服务器模块开始。在你的项目的根目录下创建一个叫server.js的文件，并写入以下代码：
+
+```js
+var http = require("http");
+
+http.createServer(function(request, response) {
+  response.writeHead(200, {"Content-Type": "text/plain"});
+  response.write("Hello World");
+  response.end();
+}).listen(8888);
+```
+
+搞定！你刚刚完成了一个可以工作的HTTP服务器。为了证明这一点，我们来运行并且测试这段代码。首先，用Node.js执行你的脚本：
+
+```js
+node server.js
+```
+
+接下来，打开浏览器访问<http://localhost:8888/>，你会看到一个写着“Hello World”的网页。
+
+这很有趣，不是吗？让我们先来谈谈HTTP服务器的问题。
+
+
+### 4.2 分析HTTP服务器
+
+
+### 4. 进行函数传递
+
+
+### 4. 函数传递是如何让HTTP服务器工作的
+
+
+### 4. 基于事件驱动的回调
+
+
+### 4. 服务器是如何处理请求的
+
+
+### 4. 服务端的模块放在哪里
+
+
+### 4. 如何来进行请求的“路由”
+
+
+### 4. 行为驱动执行
+
+
+### 4. 路由给真正的请求处理程序
+
+
+### 4. 让请求处理程序作出响应
+
+
+
 ## 5 更有用的场景
+
+处理POST请求
+处理文件上传
+
 
 ## 6 总结与展望
