@@ -6,7 +6,7 @@ Node.js Web 开发入门
 >
 > 作者： [Manuel Kiessling](https://github.com/manuelkiessling/nodebeginner.org) 翻译： goddyzhao & GrayZhang & MondayChen
 
-原文太啰嗦，我来简化下。
+原文太啰嗦，我来简化下。
 
 ---
 - [node-beginner](#node-beginner)
