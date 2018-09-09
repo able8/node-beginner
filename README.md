@@ -6,6 +6,8 @@ Node.js Web 开发入门
 >
 > 作者： [Manuel Kiessling](https://github.com/manuelkiessling/nodebeginner.org) 翻译： goddyzhao & GrayZhang & MondayChen
 
+原文太啰嗦，我来简化下。
+
 ---
 - [node-beginner](#node-beginner)
     - [1 绪论](#1-%E7%BB%AA%E8%AE%BA)
@@ -48,9 +50,7 @@ Node.js Web 开发入门
 
 至少对一门诸如Python、Ruby、PHP或者Java这样面向对象的语言有一定的经验；对JavaScript处于初学阶段，并且完全是一个Node.js的新手。
 
-本书不会对诸如数据类型、变量、控制结构等等之类非常基础的概念作介绍。
-
-本书还是会对JavaScript中的函数和对象作详细介绍，因为它们与其他同类编程语言中的函数和对象有很大的不同。
+本书不会对诸如数据类型、变量、控制结构等基础概念作介绍，但还是会对JavaScript中的函数和对象作详细介绍，因为它们与其他同类编程语言中的有很大的不同。
 
 ### 1.2 本书结构
 
@@ -58,13 +58,9 @@ Node.js Web 开发入门
 
 相比为了实现该功能书写的代码本身，我们更关注的是如何创建一个框架来对我们应用的不同模块进行干净地剥离。
 
-本书先从介绍在Node.js环境中进行JavaScript开发和在浏览器环境中进行JavaScript开发的差异开始。
+本书先介绍JavaScript和Node.js，实现最基础的Node.js应用“Hello World”。
 
-紧接着，会带领大家完成一个最传统的“Hello World”应用，这也是最基础的Node.js应用。
-
-最后，会和大家讨论如何设计一个“真正”完整的应用，剖析要完成该应用需要实现的不同模块，并一步一步介绍如何来实现这些模块。
-
-过程中，大家会学到JavaScript中一些高级的概念、如何使用它们以及为什么使用这些概念就可以实现而其他编程语言中同类的概念就无法实现。
+然后，讨论如何设计一个“真正”完整的应用，分析应用需要实现的不同模块，及如何实现这些模块。
 
 该应用所有的源代码都可以通过 [本书Github代码仓库](https://github.com/manuelkiessling/nodebeginner.org/tree/master/code/application)。
 
@@ -608,11 +604,11 @@ Request handler 'start' was called.
 
 ### 4.12 不好的实现方式
 
-直截了当的实现方式是：让请求处理程序通过onRequest函数直接返回（return()）他们要展示给用户的信息。
+直截了当的实现方式是：让请求处理程序通过onRequest函数直接 return 返回他们要展示给用户的信息。
 
-我们先就这样去实现，然后再来看为什么这不是一种很好的实现方式。
+我们先这样去实现，然后再来看为什么这不是一种好的实现方式。
 
-让我们从让请求处理程序返回需要在浏览器中显示的信息开始。我们需要将requestHandler.js修改为如下形式：
+让我们从让请求处理程序返回信息开始。我们将requestHandler.js修改为：
 
 ```js
 function start() {
@@ -629,8 +625,7 @@ exports.start = start;
 exports.upload = upload;
 ```
 
-好的。同样的，请求路由需要将请求处理程序返回给它的信息返回给服务器。因此，我们需要将router.js修改为如下形式：
-
+同样，请求路由需要将请求处理程序返回给它的信息返回给服务器。因此，我们将router.js修改为：
 
 ```js
 function route(handle, pathname) {
@@ -646,9 +641,9 @@ function route(handle, pathname) {
 exports.route = route;
 ```
 
-正如上述代码所示，当请求无法路由的时候，我们也返回了一些相关的错误信息。
+正如上述代码所示，当请求无法路由的时候，我们返回相关的错误信息。
 
-最后，我们需要对我们的server.js进行重构以使得它能够将请求处理程序通过请求路由返回的内容响应给浏览器，如下所示：
+最后，我们需要对server.js进行重构，以使得它能够将请求处理程序通过请求路由返回的内容响应给浏览器，如下所示：
 
 ```js
 var http = require("http");
@@ -658,7 +653,6 @@ function start(route, handle) {
   function onRequest(request, response) {
     var pathname = url.parse(request.url).pathname;
     console.log("Request for " + pathname + " received.");
-
     response.writeHead(200, {"Content-Type": "text/plain"});
     var content = route(handle, pathname)
     response.write(content);
@@ -672,20 +666,23 @@ function start(route, handle) {
 exports.start = start;
 ```
 
-如果我们运行重构后的应用，一切都会工作的很好：
-- 请求http://localhost:8888/start,浏览器会输出“Hello Start”
-- 请求http://localhost:8888/upload会输出“Hello Upload”
-- 请求http://localhost:8888/foo 会输出“404 Not found”
+运行重构后的应用，一切正常：
 
-好，那么问题在哪里呢？简单的说就是：当未来有请求处理程序需要进行非阻塞的操作的时候，我们的应用就“挂”了。下面就来详细解释下。
+- 请求<http://localhost:8888/start> 浏览器会输出“Hello Start”
+- 请求<http://localhost:8888/upload> 会输出“Hello Upload”
+- 请求<http://localhost:8888/foo> 会输出“404 Not found”
+
+好，那么问题在哪里呢？
+
+简单的说就是：当请求处理程序需要进行非阻塞的操作的时候，我们的应用就“挂”了。下面就来详细解释下。
 
 ### 4.13 阻塞与非阻塞
 
 我不想去解释“阻塞”和“非阻塞”的具体含义，我们直接来看，当在请求处理程序中加入阻塞操作时会发生什么。
 
-这里，我们来修改下start请求处理程序，我们让它等待10秒以后再返回“Hello Start”。因为，JavaScript中没有类似sleep()这样的操作，所以这里只能够来点小Hack来模拟实现。
+这里，我们来修改下start请求处理程序，我们让它等待10秒以后再返回“Hello Start”。因为，JavaScript中没有类似sleep()这样的操作，所以这里只能来模拟实现。
 
-让我们将requestHandlers.js修改成如下形式：
+让我们将requestHandlers.js修改成如下：
 
 ```js
 function start() {
@@ -715,13 +712,7 @@ exports.upload = upload;
 
 接下来就让我们来看看，我们的改动带来了哪些变化。
 
-如往常一样，我们先要重启下服务器。为了看到效果，首先，打开两个浏览器窗口或者标签页。在第一个浏览器窗口的地址栏中输入http://localhost:8888/start， 但是先不要打开它！
-
-在第二个浏览器窗口的地址栏中输入http://localhost:8888/upload， 同样的，先不要打开它！
-
-接下来，做如下操作：在第一个窗口中（“/start”）按下回车，然后快速切换到第二个窗口中（“/upload”）按下回车。
-
-注意，发生了什么： /start URL加载花了10秒，这和我们预期的一样。但是，/upload URL居然也花了10秒，而它在对应的请求处理程序中并没有类似于sleep()这样的操作！
+当我们同时打开 <http://localhost:8888/start> 和 <http://localhost:8888/upload>时，注意，发生了什么： /start URL加载花了10秒，这和我们预期的一样。但是，/upload URL居然也花了10秒，而它在对应的请求处理程序中并没有类似于sleep()这样的操作！
 
 这到底是为什么呢？原因就是start()包含了阻塞操作。形象的说就是“它阻塞了所有其他的处理工作”。
 
@@ -731,15 +722,11 @@ exports.upload = upload;
 
 然而，要用非阻塞操作，我们需要使用回调，通过将函数作为参数传递给其他需要花时间做处理的函数（比方说，休眠10秒，或者查询数据库，又或者是进行大量的计算）。
 
-对于Node.js来说，它是这样处理的：“嘿，probablyExpensiveFunction()（这里指的就是需要花时间处理的函数），你继续处理你的事情，我（Node.js线程）先不等你了，我继续去处理你后面的代码，请你提供一个callbackFunction()，等你处理完之后我会去调用该回调函数的，谢谢！”
+对于Node.js来说，它是这样处理的：“嘿，耗时操作Function()，你继续处理你的事情，我（Node.js线程）先不等你了，我继续去处理你后面的代码，请你提供一个callbackFunction()，等你处理完之后我会去调用该回调函数的，谢谢！”
 
 ### 4.14 错误的使用非阻塞操作
 
-我们会介绍一种错误的使用非阻塞操作的方式。
-
-和上次一样，我们通过修改我们的应用来暴露问题。
-
-这次我们还是拿start请求处理程序来“开刀”。将其修改成如下形式：
+我们介绍一种错误的使用非阻塞操作的方式，将start请求处理程序修改成如下：
 
 ```js
 var exec = require("child_process").exec;
@@ -748,7 +735,7 @@ function start() {
   console.log("Request handler 'start' was called.");
   var content = "empty";
 
-  exec("ls -lah", function (error, stdout, stderr) {
+  exec("ls -l", function (error, stdout, stderr) {
     content = stdout;
   });
 
@@ -762,58 +749,25 @@ function upload() {
 
 exports.start = start;
 exports.upload = upload;
-
 ```
 
-上述代码中，我们引入了一个新的Node.js模块，child_process。之所以用它，是为了实现一个既简单又实用的非阻塞操作：exec()。
+上述代码中，我们引入了`child_process`模块，为了实现一个既简单又实用的非阻塞操作：exec()。exec()让Node.js来执行一个shell命令，获取当前目录下所有的文件（“ls -l”）,然后，当/startURL请求的时候将文件信息输出到浏览器中。
 
-exec()做了什么呢？它从Node.js来执行一个shell命令。在上述例子中，我们用它来获取当前目录下所有的文件（“ls -lah”）,然后，当/startURL请求的时候将文件信息输出到浏览器中。
+我们启动服务器，访问<http://localhost:8888/start>，页面内容为“empty”。怎么回事？
 
-上述代码是非常直观的： 创建了一个新的变量content（初始值为“empty”），执行“ls -lah”命令，将结果赋值给content，最后将content返回。
+虽然为了进行非阻塞操作，exec()使用了回调函数，但我们的主体代码是同步执行的，在调用exec()之后，Node.js会立即执行`return content`；这时，content仍然是“empty”，因为传递给exec()的回调函数还未执行到——因为exec()的操作是异步的。
 
-和往常一样，我们启动服务器，然后访问“http://localhost:8888/start” 。
-
-之后会载入一个漂亮的web页面，其内容为“empty”。怎么回事？
-
-这个时候，你可能大致已经猜到了，exec()在非阻塞这块发挥了神奇的功效。它其实是个很好的东西，有了它，我们可以执行非常耗时的shell操作而无需迫使我们的应用停下来等待该操作。
-
-（如果想要证明这一点，可以将“ls -lah”换成比如“find /”这样更耗时的操作来效果）。
-
-然而，针对浏览器显示的结果来看，我们并不满意我们的非阻塞操作，对吧？
-
-好，接下来，我们来修正这个问题。在这过程中，让我们先来看看为什么当前的这种方式不起作用。
-
-问题就在于，为了进行非阻塞工作，exec()使用了回调函数。
-
-在我们的例子中，该回调函数就是作为第二个参数传递给exec()的匿名函数：
-
-```js
-function (error, stdout, stderr) {
-  content = stdout;
-}
-```
-
-现在就到了问题根源所在了：我们的代码是同步执行的，这就意味着在调用exec()之后，Node.js会立即执行 return content ；在这个时候，content仍然是“empty”，因为传递给exec()的回调函数还未执行到——因为exec()的操作是异步的。
-
-我们这里“ls -lah”的操作其实是非常快的（除非当前目录下有上百万个文件）。这也是为什么回调函数也会很快的执行到 —— 不过，不管怎么说它还是异步的。
-
-为了让效果更加明显，我们想象一个更耗时的命令： “find /”，它在我机器上需要执行1分钟左右的时间，然而，尽管在请求处理程序中，我把“ls -lah”换成“find /”，当打开/start URL的时候，依然能够立即获得HTTP响应 —— 很明显，当exec()在后台执行的时候，Node.js自身会继续执行后面的代码。并且我们这里假设传递给exec()的回调函数，只会在“find /”命令执行完成之后才会被调用。
-
-那究竟我们要如何才能实现将当前目录下的文件列表显示给用户呢？
-
-好，了解了这种不好的实现方式之后，我们接下来来介绍如何以正确的方式让请求处理程序对浏览器请求作出响应。
+那我们要如何才能实现将当前目录下的文件列表显示给用户呢？
 
 ### 4.15 以非阻塞操作进行请求响应
 
-用Node.js就有这样一种实现方案： 函数传递。下面就让我们来具体看看如何实现。
+实现要点就是：函数传递。
 
-到目前为止，我们的应用已经可以通过应用各层之间传递值的方式（请求处理程序 -> 请求路由 -> 服务器）将请求处理程序返回的内容（请求处理程序最终要显示给用户的内容）传递给HTTP服务器。
+之前，应用各种之间都是通过传递值的方式（请求处理程序 -> 请求路由 -> 服务器），将结果传递给HTTP服务器。
 
-现在我们采用如下这种新的实现方式：相对采用将内容传递给服务器的方式，我们这次采用将服务器“传递”给内容的方式。 从实践角度来说，就是将response对象（从服务器的回调函数onRequest()获取）通过请求路由传递给请求处理程序。 随后，处理程序就可以采用该对象上的函数来对请求作出响应。
+现在，我们采用传递response对象的方式：将服务器的回调函数onRequest()中的response对象，通过请求路由传递给请求处理程序。 随后，处理程序调用response的方法直接对请求作出响应。
 
-原理就是如此，接下来让我们来一步步实现这种方案。
-
-先从server.js开始：
+让我们来一步步实现，先从server.js开始：
 
 ```js
 var http = require("http");
@@ -834,10 +788,9 @@ function start(route, handle) {
 exports.start = start;
 ```
 
-相对此前从route()函数获取返回值的做法，这次我们将response对象作为第三个参数传递给route()函数，并且，我们将onRequest()处理程序中所有有关response的函数调都移除，因为我们希望这部分工作让route()函数来完成。
+之前，我们从route()函数获取返回值，现在我们将response对象作为第三个参数传递给route()函数，并且，我们将所有response的函数调都移除，因为我们希望让route()函数来完成。
 
 下面就来看看我们的router.js:
-
 
 ```js
 function route(handle, pathname, response) {
@@ -854,9 +807,8 @@ function route(handle, pathname, response) {
 
 exports.route = route;
 ```
-同样的模式：相对此前从请求处理程序中获取返回值，这次取而代之的是直接传递response对象。
 
-如果没有对应的请求处理器处理，我们就直接返回“404”错误。
+同样，相对之前从请求处理程序中获取返回值，这次的是直接传递response对象。
 
 最后，我们将requestHandler.js修改为如下形式：
 
@@ -884,14 +836,13 @@ exports.start = start;
 exports.upload = upload;
 ```
 
-我们的处理程序函数需要接收response参数，为了对请求作出直接的响应。
+为了对请求作出直接的响应，处理函数需要接收`response`参数。
 
 start处理程序在exec()的匿名回调函数中做请求响应的操作，而upload处理程序仍然是简单的回复“Hello World”，只是这次是使用response对象而已。
 
-这时再次我们启动应用（node index.js），一切都会工作的很好。
+再次我们启动应用（node index.js），一切正常。
 
 如果想要证明/start处理程序中耗时的操作不会阻塞对/upload请求作出立即响应的话，可以将requestHandlers.js修改为如下形式：
-
 
 ```js
 var exec = require("child_process").exec;
@@ -919,8 +870,7 @@ exports.start = start;
 exports.upload = upload;
 ```
 
-这样一来，当请求http://localhost:8888/start的时候，会花10秒钟的时间才载入，而当请求http://localhost:8888/upload的时候，会立即响应，纵然这个时候/start响应还在处理中。
-
+这样，当请求<http://localhost:8888/start>时，10秒后才载入，而请求<http://localhost:8888/upload>会立即响应，虽然这时/start响应还在处理中。
 
 ## 5 更有用的场景
 
