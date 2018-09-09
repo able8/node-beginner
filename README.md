@@ -9,6 +9,7 @@ Node.js Web 开发入门
 原文太啰嗦，我来简化下。
 
 ---
+
 - [node-beginner](#node-beginner)
     - [1 绪论](#1-%E7%BB%AA%E8%AE%BA)
         - [1.1 读者对象](#11-%E8%AF%BB%E8%80%85%E5%AF%B9%E8%B1%A1)
@@ -80,9 +81,9 @@ Node.js生态系统包括众多第三方模块，大大简化开发过程。
 
 ### 2.2 “Hello World”
 
-马上开始我们第一个Node.js应用：“Hello World”。
+开始我们的第一个Node.js应用：“Hello World”。
 
-打开你最喜欢的编辑器，创建一个helloworld.js文件。我们要做就是向STDOUT输出“Hello World”，如下是实现该功能的代码：
+打开你最喜欢的编辑器，创建一个helloworld.js文件。我们要做就是向STDOUT输出“Hello World”，代码如下：
 
 ```js
 console.log('Hello World');
@@ -90,13 +91,11 @@ console.log('Hello World');
 
 保存该文件，并通过Node.js来执行：
 
-```js
+```sh
 node helloworld.js
 ```
 
-正常的话，就会在终端输出Hello World 。
-
-好吧，我承认这个应用是有点无趣，那么下面我们就来点“干货”。
+正确的话，终端输出Hello World 。
 
 ## 3 一个完整的基于Node.js的web应用
 
@@ -123,7 +122,7 @@ node helloworld.js
 
 使用Node.js时，我们不仅在实现一个应用，同时还实现了HTTP服务器。事实上，我们的Web应用以及对应的Web服务器基本上是一样的。
 
-听起来好像有一大堆活要做，但对Node.js来说这并不是什么麻烦的事。
+听起来很多，但对Node.js来说不难。
 
 现在我们就先从第一个部分 —— HTTP服务器着手。
 
@@ -143,15 +142,13 @@ http.createServer(function(request, response) {
 }).listen(8888);
 ```
 
-搞定！你刚刚完成了一个可以工作的HTTP服务器。为了证明这一点，我们来运行并且测试这段代码。首先，用Node.js执行你的脚本：
+搞定！你刚刚完成了一个可以运行的HTTP服务器。我们来运行并且测试这段代码。首先，用Node.js执行你的脚本：
 
-```js
+```sh
 node server.js
 ```
 
 接下来，打开浏览器访问<http://localhost:8888/>，你会看到一个写着“Hello World”的网页。
-
-这很有趣，不是吗？让我们先来谈谈HTTP服务器的问题。
 
 ### 4.2 分析HTTP服务器
 
@@ -159,11 +156,9 @@ node server.js
 
 第一行请求（require）Node.js自带的 http 模块，并且把它赋值给 http 变量。
 
-接下来我们调用http模块提供的函数： createServer 。这个函数会返回一个对象，这个对象有一个叫做 listen 的方法，这个方法有一个数值参数，指定这个HTTP服务器监听的端口号。
+接下来我们调用http模块提供的函数： `createServer` 。这个函数会返回一个对象，这个对象有一个叫做 listen 的方法，这个方法有一个数值参数，指定服务器监听的端口号。
 
-咱们暂时先不管 http.createServer 的括号里的那个函数定义。
-
-我们本来可以用这样的代码来启动服务器并侦听8888端口：
+先不管 http.createServer 的括号里的那个函数定义，我们可以用下面的代码来启动服务器并侦听8888端口：
 
 ```js
 var http = require("http");
@@ -174,9 +169,7 @@ server.listen(8888);
 
 这段代码只会启动一个侦听8888端口的服务器，它不做任何别的事情，甚至连请求都不会应答。
 
-最有趣的部分是 createServer() 的第一个参数，一个函数定义。
-
-实际上，这个函数定义是 createServer() 的第一个也是唯一一个参数。因为在JavaScript中，函数和其他变量一样都是可以被传递的。
+最有趣的部分是 createServer() 的第一个参数，一个函数定义。在JavaScript中，函数和其他变量一样都是可以被传递的。
 
 ### 4.3 进行函数传递
 
@@ -194,7 +187,7 @@ function execute(someFunction, value) {
 execute(say, "Hello");
 ```
 
-请仔细阅读这段代码！在这里，我们把 say 函数作为execute函数的第一个变量进行了传递。这里传递的不是 say 的返回值，而是 say 本身！
+请仔细阅读这段代码！在这里，我们把 say 函数作为execute函数的第一个变量进行了传递。这里传递的**不是 say 的返回值**，而是 say 本身！
 
 这样一来， say 就变成了execute 中的本地变量 someFunction ，execute可以通过调用 someFunction() （带括号的形式）来使用 say 函数。
 
@@ -212,7 +205,7 @@ execute(function(word){ console.log(word) }, "Hello");
 
 我们在 execute 接受第一个参数的地方直接定义了我们准备传递给 execute 的函数。
 
-用这种方式，我们甚至不用给这个函数起名字，这也是为什么它被叫做 匿名函数 。
+用这种方式，我们甚至不用给这个函数起名字，这也是为什么它被叫做 **匿名函数** 。
 
 在JavaScript中，我们可以先定义一个函数，然后传递，也可以在传递参数的地方直接定义函数。
 
@@ -252,15 +245,15 @@ http.createServer(onRequest).listen(8888);
 
 在我们的Node.js程序中，当一个新的请求到达8888端口的时候，我们怎么控制流程呢？
 
-这就是Node.js/JavaScript的事件驱动设计能够真正帮上忙的地方了。
+这就是Node.js/JavaScript的事件驱动设计的作用了。
 
 我们创建了服务器，并向创建它的方法传递了一个函数。无论何时我们的服务器收到一个请求，这个函数就会被调用。
 
 我们不知道这件事情什么时候会发生，但是我们现在有了一个处理请求的地方：它就是我们传递过去的那个函数。至于它是被预先定义的函数还是匿名函数，就无关紧要了。
 
-这个就是传说中的 回调 。我们给某个方法传递了一个函数，这个方法在有相应事件发生时调用这个函数来进行 回调 。
+这就是 回调 。我们给某个方法传递了一个函数，这个方法在相应事件发生时调用这个函数来进行 回调 。
 
-让我们再来琢磨琢磨这个新概念。我们怎么证明，在创建完服务器之后，即使没有HTTP请求进来、我们的回调函数也没有被调用的情况下，我们的代码还继续有效呢？我们试试这个：
+我们再添加两条输出，在 onRequest（我们的回调函数）触发的地方，和HTTP服务器开始工作之后，用 console.log 输出文本。代码如下：
 
 ```js
 var http = require("http");
@@ -277,9 +270,9 @@ http.createServer(onRequest).listen(8888);
 console.log("Server has started.");
 ```
 
-> 注意：在 onRequest（我们的回调函数）触发的地方，我用 console.log 输出了一段文本。在HTTP服务器开始工作之后，也输出一段文本。
+运行`node server.js`时，命令行上输出“Server has started.”。
 
-运行node server.js时，命令行上输出“Server has started.”。当我们向服务器发出请求（在浏览器访问<http://localhost:8888/ >），“Request received.”这条消息就会在命令行中出现。
+当我们向服务器发出请求（在浏览器访问<http://localhost:8888/>），“Request received.”这条消息就会在命令行中出现。
 
 这就是事件驱动的异步服务器端JavaScript和它的回调啦！
 
@@ -301,15 +294,14 @@ console.log("Server has started.");
 
 ### 4.7 服务端的模块放在哪里
 
-怎么组织代码，我们应该把所有东西都放进一个文件里吗？
+可以把所有代码放在一个文件里吗？
 
 实际上，为了便于维护，保持代码的可读性，我们把不同功能的代码放入不同的模块中，保持代码分离。
+这种方法允许你拥有一个简洁的主文件，你可以用Node.js执行它；同时你可以拥有简洁的模块，它们可以被主文件和其他的模块调用。
 
-这种方法允许你拥有一个干净的主文件（main file），你可以用Node.js执行它；同时你可以拥有干净的模块，它们可以被主文件和其他的模块调用。
+通常我们会有一个叫 index.js 的文件去调用其他模块来引导和启动应用。
 
-通常我们会有一个叫 index.js 的文件去调用应用的其他模块（比如 server.js 中的HTTP服务器模块）来引导和启动应用。
-
-我们现在就来谈谈怎么把server.js变成一个真正的Node.js模块，使它可以被我们（还没动工）的 index.js 主文件使用。
+怎么把server.js变成一个真正的Node.js模块，使它可以被index.js 主文件使用。
 
 也许你已经注意到，我们已经在代码中使用了模块了。像这样：
 
@@ -329,8 +321,7 @@ Node.js中自带了一个叫做“http”的模块，我们在我们的代码中
 
 目前，我们的HTTP服务器需要导出的功能非常简单，因为请求服务器模块的脚本仅仅是需要启动服务器而已。
 
-我们把我们的服务器脚本放到一个叫做 start 的函数里，然后我们会导出这个函数。
-
+我们把服务器脚本放到一个叫做 start 的函数里，然后会导出这个函数。
 
 ```js
 var http = require("http");
@@ -360,28 +351,23 @@ var server = require("./server");
 server.start();
 ```
 
-我们可以像使用任何其他的内置模块一样使用server模块：请求这个文件并把它指向一个变量，其中已导出的函数就可以被我们使用了。
+我们可以像使用其他内置模块一样使用server模块：require这个文件并把它指向一个变量，我们就可以使用模块中已导出的函数了。
 
-好了。我们现在就可以从我们的主要脚本启动我们的的应用了，而它还是老样子：
+现在，我们可以这样启动应用了：
 
-```js
+```sh
 node index.js
 ```
 
-我们现在可以把我们的应用的不同部分放入不同的文件里，并且通过生成模块的方式把它们连接到一起了。
+我们现在可以把应用的不同部分放入不同的文件里，并且通过生成模块的方式把它们连接到一起了。
 
-我们仍然只拥有整个应用的最初部分：我们可以接收HTTP请求。但是我们得做点什么——对于不同的URL请求，服务器应该有不同的反应。
-
-对于一个非常简单的应用来说，你可以直接在回调函数 onRequest() 中做这件事情。不过就像我说过的，我们应该加入一些抽象的元素，让我们的例子变得更有趣一点儿。
-
-处理不同的HTTP请求在我们的代码中是一个不同的部分，叫做“路由选择”——那么，我们接下来就创造一个叫做 路由 的模块吧。
+我们实现了应用的最初部分：接收HTTP请求。但是对于不同的URL请求，服务器应该有不同的反应。处理不同的HTTP请求，就需要做“路由选择”。我们接下来就创造一个叫做 路由 的模块吧。
 
 ### 4.8 如何来进行请求的“路由”
 
 我们需要查看HTTP请求，从中提取出请求的URL以及GET/POST参数。
 
 我们需要的所有数据都会包含在request对象中，该对象作为onRequest()回调函数的第一个参数传递。但是为了解析这些数据，我们需要额外的Node.JS模块，它们分别是url和querystring模块。
-
 
 ```js
                                  url.parse(string).query
@@ -398,7 +384,6 @@ http://localhost:8888/start?foo=bar&hello=world
                                          |
                     querystring(string)["hello"]
 ```
-
 
 现在我们来给onRequest()函数加上一些逻辑，用来找出浏览器请求的URL路径：
 
@@ -478,7 +463,6 @@ server.start(router.route);
 
 如果现在启动应用（node index.js，始终记得这个命令行），随后请求一个URL，你将会看到应用输出相应的信息，这表明我们的HTTP服务器已经在使用路由模块了，并会将请求的路径传递给路由。
 
-
 ### 4.9 行为驱动执行
 
 请允许我再次脱离主题，在这里谈一谈函数式编程。
@@ -515,7 +499,7 @@ exports.upload = upload;
 
 那么我们要怎么传递这些请求处理程序呢？别看现在我们只有2个处理程序，在一个真实的应用中，请求处理程序的数量会不断增加，我们当然不想每次有一个新的URL或请求处理程序时，都要为了在路由里完成请求到处理程序的映射而反复折腾。除此之外，在路由里有一大堆if request == x then call handler y也使得系统丑陋不堪。
 
-J在JavaScript中，对象就是一个键/值对的集合 -- 你可以把JavaScript的对象想象成一个键为字符串类型的字典。avaScript的对象的值可以是字符串、数字或者……函数！
+在JavaScript中，对象就是一个键/值对的集合 -- 你可以把JavaScript的对象想象成一个键为字符串类型的字典。JavaScript的对象的值可以是字符串、数字或者……函数！
 
 现在我们已经确定将一系列请求处理程序通过一个对象来传递，并且需要使用松耦合的方式将这个对象注入到route()函数中。
 
@@ -565,7 +549,6 @@ exports.start = start;
 
 然后我们相应地在route.js文件中修改route()函数：
 
-
 ```js
 function route(handle, pathname) {
   console.log("About to route a request for " + pathname);
@@ -579,24 +562,28 @@ function route(handle, pathname) {
 exports.route = route;
 ```
 
-通过以上代码，我们首先检查给定的路径对应的请求处理程序是否存在，如果存在的话直接调用相应的函数。我们可以用从关联数组中获取元素一样的方式从传递的对象中获取请求处理函数，因此就有了简洁流畅的形如handle[pathname]();的表达式，这个感觉就像在前方中提到的那样：“嗨，请帮我处理了这个路径”。
+我们首先检查，给定路径 对应的请求处理程序 是否存在，如果存在的话直接调用相应的函数。我们可以用从关联数组中获取元素一样的方式从传递的对象中获取请求处理函数，因此就有了简洁流畅的形如`handle[pathname]();`的表达式，这个就像前面提到的那样：“嗨，请帮我处理了这个路径”。
 
-有了这些，我们就把服务器、路由和请求处理程序在一起了。现在我们启动应用程序并在浏览器中访问http://localhost:8888/start，以下日志可以说明系统调用了正确的请求处理程序
+有了这些，我们就把服务器、路由和请求处理程序结合在一起了。现在我们启动应用程序并在浏览器中访问<http://localhost:8888/start>，以下日志可以说明系统调用了正确的请求处理程序:
 
+```sh
 Server has started.
 Request for /start received.
 About to route a request for /start
 Request handler 'start' was called.
-并且在浏览器中打开http://localhost:8888/可以看到这个请求同样被start请求处理程序处理了：
+```
 
+并且在浏览器中打开<http://localhost:8888/>可以看到这个请求同样被start请求处理程序处理了：
+
+```js
 Request for / received.
 About to route a request for /
 Request handler 'start' was called.
-
+```
 
 ### 4.11 让请求处理程序作出响应
 
-很好。不过现在要是请求处理程序能够向浏览器返回一些有意义的信息而并非全是“Hello World”，那就更好了。
+很好。不过要是请求处理程序能够向浏览器返回一些有意义的信息而并非全是“Hello World”，那就更好了。
 
 这里要记住的是，浏览器发出请求后获得并显示的“Hello World”信息仍是来自于我们server.js文件中的onRequest函数。
 
@@ -672,7 +659,7 @@ exports.start = start;
 - 请求<http://localhost:8888/upload> 会输出“Hello Upload”
 - 请求<http://localhost:8888/foo> 会输出“404 Not found”
 
-好，那么问题在哪里呢？
+那么问题在哪里呢？
 
 简单的说就是：当请求处理程序需要进行非阻塞的操作的时候，我们的应用就“挂”了。下面就来详细解释下。
 
@@ -874,16 +861,12 @@ exports.upload = upload;
 
 ## 5 更有用的场景
 
-到目前为止，我们做的已经很好了，但是，我们的应用没有实际用途。
+下面让我们给网站添加交互：用户选择一个文件，上传该文件，然后在浏览器中看到上传的文件。我们假设用户只会上传图片，然后我们应用将该图片显示到浏览器中。
 
-服务器，请求路由以及请求处理程序都已经完成了，下面让我们按照此前的用例给网站添加交互：用户选择一个文件，上传该文件，然后在浏览器中看到上传的文件。 为了保持简单，我们假设用户只会上传图片，然后我们应用将该图片显示到浏览器中。
+要实现该功能，分为两步：首先，让我们来看看如何处理POST请求（非文件上传），之后，我们使用Node.js的一个用于文件上传的外部模块。之所以采用这种实现方式有两个理由。
 
-好，下面就一步步来实现，鉴于此前已经对JavaScript原理性技术性的内容做过大量介绍了，这次我们加快点速度。
-
-要实现该功能，分为如下两步： 首先，让我们来看看如何处理POST请求（非文件上传），之后，我们使用Node.js的一个用于文件上传的外部模块。之所以采用这种实现方式有两个理由。
-
-第一，尽管在Node.js中处理基础的POST请求相对比较简单，但在这过程中还是能学到很多。
-第二，用Node.js来处理文件上传（multipart POST请求）是比较复杂的，它不在本书的范畴，但，如何使用外部模块却是在本书涉猎内容之内。
+- 第一，Node.js处理基础的POST请求虽然简单，但在这过程中能学到很多
+- 第二，用Node.js来处理文件上传（multipart POST请求）是比较复杂的，它不在本书的范畴，但，如何使用外部模块却是在本书涉猎内容之内。
 
 ### 5.1 处理POST请求
 
@@ -895,18 +878,14 @@ exports.upload = upload;
 function start(response) {
   console.log("Request handler 'start' was called.");
 
-  var body = '<html>'+
-    '<head>'+
-    '<meta http-equiv="Content-Type" content="text/html; '+
+  var body = '<html><head><meta http-equiv="Content-Type" content="text/html; '+
     'charset=UTF-8" />'+
-    '</head>'+
-    '<body>'+
+    '</head><body>'+
     '<form action="/upload" method="post">'+
     '<textarea name="text" rows="20" cols="60"></textarea>'+
     '<input type="submit" value="Submit text" />'+
     '</form>'+
-    '</body>'+
-    '</html>';
+    '</body></html>';
 
     response.writeHead(200, {"Content-Type": "text/html"});
     response.write(body);
@@ -923,9 +902,11 @@ function upload(response) {
 exports.start = start;
 exports.upload = upload;
 ```
-好了，现在我们的应用已经很完善了。通过在浏览器中访问http://localhost:8888/start就可以看到简单的表单了，要记得重启服务器哦！
+
+好了，现在浏览器中访问<http://localhost:8888/start>就可以看到简单的表单了，记得重启服务器哦！
 
 你可能会说：这种直接将视觉元素放在请求处理程序中的方式太丑陋了。说的没错，但是，我并不想在本书中介绍诸如MVC之类的模式，因为这对于你了解JavaScript或者Node.js环境来说没多大关系。
+
 余下的篇幅，我们来探讨一个更有趣的问题： 当用户提交表单时，触发/upload请求处理程序处理POST请求的问题。
 
 现在，我们已经是新手中的专家了，很自然会想到采用异步回调来实现非阻塞地处理POST请求的数据。
@@ -937,7 +918,6 @@ exports.upload = upload;
 我们需要告诉Node.js当这些事件触发的时候，回调哪些函数。怎么告诉呢？ 我们通过在request对象上注册监听器（listener） 来实现。这里的request对象是每次接收到HTTP请求时候，都会把该对象传递给onRequest回调函数。
 
 如下所示：
-
 
 ```js
 request.addListener("data", function(chunk) {
@@ -956,7 +936,6 @@ request.addListener("end", function() {
 因此，实现思路就是： 将data和end事件的回调函数直接放在服务器中，在data事件回调中收集所有的POST数据，当接收到所有数据，触发end事件后，其回调函数调用请求路由，并将数据传递给它，然后，请求路由再将该数据传递给请求处理程序。
 
 还等什么，马上来实现。先从server.js开始：
-
 
 ```js
 var http = require("http");
@@ -997,7 +976,6 @@ exports.start = start;
 
 再来点酷的。我们接下来在/upload页面，展示用户输入的内容。要实现该功能，我们需要将postData传递给请求处理程序，修改router.js为如下形式：
 
-
 ```js
 function route(handle, pathname, response, postData) {
   console.log("About to route a request for " + pathname);
@@ -1013,9 +991,8 @@ function route(handle, pathname, response, postData) {
 
 exports.route = route;
 ```
+
 然后，在requestHandlers.js中，我们将数据包含在对upload请求的响应中：
-
-
 
 ```js
 function start(response, postData) {
@@ -1056,7 +1033,6 @@ exports.upload = upload;
 
 我们可以使用此前介绍过的querystring模块来实现：
 
-
 ```js
 var querystring = require("querystring");
 
@@ -1095,16 +1071,13 @@ exports.upload = upload;
 
 好了，以上就是关于处理POST数据的全部内容。
 
-
-
 ### 5.2 处理文件上传
 
-最后，我们来实现我们最终的用例：允许用户上传图片，并将该图片在浏览器中显示出来。我们通过它能学到这样两件事情： 如何安装外部Node.js模块，以及如何将它们应用到我们的应用中。
+最后，我们来实现我们最终的目标：允许用户上传图片，并将该图片在浏览器中显示出来。我们通过它能学到如何安装和使用外部Node.js模块。
 
-这里我们要用到的外部模块是node-formidable模块。它对解析上传的文件数据做了很好的抽象。 其实说白了，处理文件上传“就是”处理POST数据 —— 但是，麻烦的是在具体的处理细节，所以，这里采用现成的方案更合适点。
+这里我们要用到的外部模块是node-formidable模块。它对解析上传的文件数据做了很好的抽象。其实说白了，处理文件上传“就是”处理POST数据 —— 但是，麻烦的是在具体的处理细节，所以，这里采用现成的方案更合适点。
 
 使用该模块，首先需要安装该模块。Node.js有它自己的包管理器，叫NPM。它可以让安装Node.js的外部模块变得非常方便。通过如下一条命令就可以完成该模块的安装：
-
 
 ```js
 npm install formidable
@@ -1119,7 +1092,6 @@ var formidable = require("formidable");
 这里该模块做的就是将通过HTTP POST请求提交的表单，在Node.js中可以被解析。我们要做的就是创建一个新的IncomingForm，它是对提交表单的抽象表示，之后，就可以用它解析request对象，获取表单中需要的数据字段。
 
 node-formidable官方的例子展示了这两部分是如何融合在一起工作的：
-
 
 ```js
 var formidable = require('formidable'),
@@ -1153,7 +1125,6 @@ http.createServer(function(req, res) {
 
 如果我们将上述代码，保存到一个文件中，并通过node来执行，就可以进行简单的表单提交了，包括文件上传。然后，可以看到通过调用form.parse传递给回调函数的files对象的内容，如下所示：
 
-
 ```js
 received upload:
 
@@ -1170,6 +1141,7 @@ received upload:
         filename: [Getter],
         mime: [Getter] } } }
 ```
+
 为了实现我们的功能，我们需要将上述代码应用到我们的应用中，另外，我们还要考虑如何将上传文件的内容（保存在/tmp目录中）显示到浏览器中。
 
 我们先来解决后面那个问题： 对于保存在本地硬盘中的文件，如何才能在浏览器中看到呢？
@@ -1179,7 +1151,6 @@ received upload:
 我们来添加/showURL的请求处理程序，该处理程序直接硬编码将文件/tmp/test.png内容展示到浏览器中。当然了，首先需要将该图片保存到这个位置才行。
 
 将requestHandlers.js修改为如下形式：
-
 
 ```js
 var querystring = require("querystring"),
@@ -1236,7 +1207,6 @@ exports.show = show;
 
 我们还需要将这新的请求处理程序，添加到index.js中的路由映射表中：
 
-
 ```js
 var server = require("./server");
 var router = require("./router");
@@ -1249,18 +1219,17 @@ handle["/upload"] = requestHandlers.upload;
 handle["/show"] = requestHandlers.show;
 
 server.start(router.route, handle);
-
 ```
 
-重启服务器之后，通过访问http://localhost:8888/show，就可以看到保存在/tmp/test.png的图片了。
+重启服务器之后，通过访问<http://localhost:8888/show>，就可以看到保存在/tmp/test.png的图片了。
 
 好，最后我们要的就是：
+
 - 在/start表单中添加一个文件上传元素
 - 将node-formidable整合到我们的upload请求处理程序中，用于将上传的图片保存到/tmp/test.png
 - 将上传的图片内嵌到/uploadURL输出的HTML中
 
 第一项很简单。只需要在HTML表单中，添加一个multipart/form-data的编码类型，移除此前的文本区，添加一个文件上传组件，并将提交按钮的文案改为“Upload file”即可。 如下requestHandler.js所示：
-
 
 ```js
 var querystring = require("querystring"),
@@ -1324,7 +1293,6 @@ exports.show = show;
 
 我们从server.js开始 —— 移除对postData的处理以及request.setEncoding （这部分node-formidable自身会处理），转而采用将request对象传递给请求路由的方式：
 
-
 ```js
 var http = require("http");
 var url = require("url");
@@ -1344,7 +1312,6 @@ exports.start = start;
 ```
 
 接下来是 router.js —— 我们不再需要传递postData了，这次要传递request对象：
-
 
 ```js
 function route(handle, pathname, response, request) {
@@ -1367,7 +1334,6 @@ exports.route = route;
 这里采用fs.renameSync(path1,path2)来实现。要注意的是，正如其名，该方法是同步执行的， 也就是说，如果该重命名的操作很耗时的话会阻塞。 这块我们先不考虑。
 
 接下来，我们把处理文件上传以及重命名的操作放到一起，如下requestHandlers.js所示：
-
 
 ```js
 var querystring = require("querystring"),
